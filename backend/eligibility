@@ -1,0 +1,98 @@
+SCHEMES = {
+
+    "pm kisan": {
+        "name": "PM Kisan",
+        "min_age": 18,
+        "occupation": "farmer",
+        "income_limit": 500000
+    },
+
+    "scholarship": {
+        "name": "PM Scholarship Scheme",
+        "max_age": 25,
+        "education": "student"
+    },
+
+    "ayushman": {
+        "name": "Ayushman Bharat",
+        "income_limit": 300000
+    }
+}
+
+
+def check_eligibility(
+    scheme,
+    age=None,
+    occupation=None,
+    income=None,
+    education=None
+):
+
+    scheme_key = scheme.lower()
+
+    if scheme_key not in SCHEMES:
+
+        return {
+            "eligible": False,
+            "reason": "Scheme not found."
+        }
+
+    rules = SCHEMES[scheme_key]
+
+    reasons = []
+
+    # Age check
+    if "min_age" in rules and age is not None:
+
+        if age < rules["min_age"]:
+
+            reasons.append(
+                f"Age must be at least {rules['min_age']}."
+            )
+
+    if "max_age" in rules and age is not None:
+
+        if age > rules["max_age"]:
+
+            reasons.append(
+                f"Age must be below or equal to {rules['max_age']}."
+            )
+
+    # Occupation check
+    if "occupation" in rules and occupation:
+
+        if occupation.lower() != rules["occupation"].lower():
+
+            reasons.append(
+                f"Occupation should be {rules['occupation']}."
+            )
+
+    # Education check
+    if "education" in rules and education:
+
+        if education.lower() != rules["education"].lower():
+
+            reasons.append(
+                f"Education requirement: {rules['education']}."
+            )
+
+    # Income check
+    if "income_limit" in rules and income is not None:
+
+        if income > rules["income_limit"]:
+
+            reasons.append(
+                f"Income should not exceed ₹{rules['income_limit']}."
+            )
+
+    if reasons:
+
+        return {
+            "eligible": False,
+            "reason": reasons
+        }
+
+    return {
+        "eligible": True,
+        "reason": "You appear to satisfy the basic criteria."
+    }
