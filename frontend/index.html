@@ -1,0 +1,2055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JanSahayak — Government Document Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
+<!-- Lightweight markdown renderer for parsed typography -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<style>
+  :root {
+    --bg: #f7f4ee;
+    --bg-raised: #fffdf9;
+    --bg-subtle: #f0ebe1;
+    --ink: #1f1b18;
+    --ink-soft: #5a544c;
+    --ink-muted: #857e74;
+    --line: #ded4bf;
+    --line-subtle: #ece5d6;
+    
+    --saffron: #b45309;
+    --saffron-hover: #92400e;
+    --saffron-soft: #fef3c7;
+    --saffron-deep: #78350f;
+    
+    --green: #1b4332;
+    --green-light: #2d6a4f;
+    --green-soft: #e8f5e9;
+    --green-pill: #1e4620;
+    
+    --amber: #92681a;
+    --red: #9c3b2e;
+    --red-soft: #fdf2f0;
+    --focus: #1b4332;
+    
+    --shadow-sm: 0 1px 2px rgba(31, 27, 24, 0.05);
+    --shadow-md: 0 4px 12px rgba(31, 27, 24, 0.07);
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --font-scale: 1;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Public Sans', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: calc(15px * var(--font-scale));
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Focus ring */
+  :focus-visible {
+    outline: 2.5px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Source Serif 4', 'Noto Sans Devanagari', Georgia, serif;
+    margin: 0;
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  a { color: var(--saffron); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ===== Tricolor micro-bar ===== */
+  .tricolor-edge {
+    height: 4px;
+    width: 100%;
+    background: linear-gradient(90deg, #ff9933 33.3%, #ffffff 33.3%, #ffffff 66.6%, #138808 66.6%);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+
+  /* ===== Utility Top Bar ===== */
+  .utility-bar {
+    background: #1c1815;
+    color: #e5dfd5;
+    font-size: 12.5px;
+    border-bottom: 1px solid #332d27;
+  }
+  .utility-bar .wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 24px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .utility-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .utility-badge {
+    background: #2e2823;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    color: #d1c8bb;
+    letter-spacing: 0.03em;
+  }
+  .utility-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .util-btn {
+    background: none;
+    border: none;
+    color: #e5dfd5;
+    font-family: inherit;
+    font-size: 12.5px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .util-btn:hover {
+    background: #332d27;
+    color: #ffffff;
+  }
+  .lang-toggle-wrap {
+    display: inline-flex;
+    background: #2e2823;
+    border-radius: 4px;
+    padding: 2px;
+  }
+  .lang-pill {
+    background: none;
+    border: none;
+    color: #b0a79a;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 2px 8px;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+  .lang-pill.active {
+    background: var(--saffron);
+    color: #fff;
+  }
+
+  .status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    color: #bbf7d0;
+    background: #143521;
+    padding: 2px 9px;
+    border-radius: 100px;
+    border: 1px solid #1f5e36;
+  }
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    background: #4ade80;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #4ade80;
+  }
+
+  /* ===== Header & Brand ===== */
+  header.site-header {
+    background: var(--bg-raised);
+    border-bottom: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+  }
+  .header-main {
+    padding: 20px 0 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .brand-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .civic-seal {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+  }
+  .brand-text h1 {
+    font-size: 26px;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .brand-text .hindi-sub {
+    font-family: 'Noto Sans Devanagari', sans-serif;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--ink-soft);
+  }
+  .brand-text p.tagline {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin: 3px 0 0;
+  }
+
+  /* Navigation Tabs */
+  nav.main-nav {
+    display: flex;
+    gap: 6px;
+    border-top: 1px solid var(--line-subtle);
+    overflow-x: auto;
+  }
+  nav.main-nav button {
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    padding: 14px 18px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  nav.main-nav button:hover {
+    color: var(--ink);
+    background: var(--bg-subtle);
+  }
+  nav.main-nav button.active {
+    color: var(--ink);
+    border-bottom-color: var(--saffron);
+    background: rgba(180, 83, 9, 0.04);
+  }
+  .nav-count-badge {
+    background: var(--bg-subtle);
+    color: var(--ink-soft);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+  }
+
+  /* ===== App Layout ===== */
+  .app-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 32px;
+    padding: 32px 0 64px;
+    align-items: start;
+  }
+
+  /* ===== Sidebar Panel ===== */
+  aside.sidebar {
+    position: sticky;
+    top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .side-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    box-shadow: var(--shadow-sm);
+  }
+  .side-card h3 {
+    font-family: 'Public Sans', sans-serif;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-muted);
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .filter-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .jur-checkbox-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 500;
+    border: 1px solid transparent;
+    transition: all 0.12s;
+  }
+  .jur-checkbox-label:hover {
+    background: var(--bg-subtle);
+  }
+  .jur-checkbox-label.checked {
+    background: #fdfaf3;
+    border-color: var(--line);
+  }
+  .jur-checkbox-inner {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .jur-checkbox-label input[type="checkbox"] {
+    accent-color: var(--saffron);
+    width: 15px;
+    height: 15px;
+    margin: 0;
+    cursor: pointer;
+  }
+  .filter-count {
+    font-size: 11px;
+    color: var(--ink-muted);
+    font-weight: 600;
+  }
+
+  .topic-pill-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .topic-pill-btn {
+    background: none;
+    border: 1px solid var(--line-subtle);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.12s;
+  }
+  .topic-pill-btn:hover {
+    border-color: var(--saffron);
+    color: var(--saffron-hover);
+    background: #fff;
+  }
+  .topic-pill-btn.active {
+    background: var(--saffron-soft);
+    border-color: var(--saffron);
+    color: var(--saffron-deep);
+    font-weight: 600;
+  }
+
+  .status-card-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 12.5px;
+  }
+  .status-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 6px;
+    border-bottom: 1px dashed var(--line-subtle);
+  }
+  .status-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .status-val-pill {
+    font-weight: 600;
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: var(--green-soft);
+    color: var(--green);
+  }
+
+  /* ===== Main Content Views ===== */
+  main.main-content section {
+    display: none;
+    animation: fadeIn 0.2s ease-in;
+  }
+  main.main-content section.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(3px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Section Title Block */
+  .section-intro {
+    margin-bottom: 24px;
+  }
+  .section-intro h2 {
+    font-size: 24px;
+    margin-bottom: 6px;
+  }
+  .section-intro p {
+    color: var(--ink-soft);
+    font-size: 14.5px;
+    margin: 0;
+  }
+
+  /* ===== ASK SECTION ===== */
+  .ask-box-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 16px 20px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 24px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .ask-box-card:focus-within {
+    border-color: var(--saffron);
+    box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.12);
+  }
+  .ask-input-wrap {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .ask-textarea {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    font-size: 15.5px;
+    line-height: 1.5;
+    background: transparent;
+    color: var(--ink);
+    resize: none;
+    min-height: 52px;
+    max-height: 200px;
+    padding: 4px 0;
+  }
+  .ask-textarea::placeholder {
+    color: var(--ink-muted);
+  }
+  .ask-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .icon-btn {
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    border-radius: 6px;
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .icon-btn:hover {
+    background: var(--bg-subtle);
+    color: var(--ink);
+    border-color: var(--ink-muted);
+  }
+  .ask-submit-btn {
+    background: var(--saffron);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 9px 18px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s, transform 0.05s;
+    height: 38px;
+  }
+  .ask-submit-btn:hover {
+    background: var(--saffron-hover);
+  }
+  .ask-submit-btn:active {
+    transform: translateY(1px);
+  }
+  .ask-submit-btn:disabled {
+    background: var(--ink-muted);
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .quick-prompts-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+    font-size: 13px;
+  }
+  .quick-prompts-label {
+    font-weight: 600;
+    color: var(--ink-soft);
+    font-size: 12.5px;
+  }
+  .prompt-chip {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    padding: 5px 13px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .prompt-chip:hover {
+    border-color: var(--saffron);
+    color: var(--saffron-hover);
+    background: #fff;
+  }
+
+  /* Answer Card (High-End Craft) */
+  .response-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .answer-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .answer-card-header {
+    background: #fbf7ee;
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .user-query-text {
+    font-weight: 600;
+    font-size: 15.5px;
+    color: var(--ink);
+  }
+  .query-meta-pill {
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--bg-subtle);
+    border: 1px solid var(--line);
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: var(--ink-soft);
+  }
+
+  .answer-card-body {
+    padding: 22px;
+    font-size: 15.5px;
+    color: #24201c;
+  }
+  /* Typography inside markdown answers */
+  .answer-card-body h1, .answer-card-body h2, .answer-card-body h3 {
+    font-size: 18px;
+    margin: 16px 0 8px;
+    color: var(--ink);
+  }
+  .answer-card-body h1:first-child, .answer-card-body h2:first-child, .answer-card-body h3:first-child {
+    margin-top: 0;
+  }
+  .answer-card-body p {
+    margin: 0 0 12px;
+    line-height: 1.65;
+  }
+  .answer-card-body ul, .answer-card-body ol {
+    margin: 8px 0 16px 20px;
+    padding: 0;
+  }
+  .answer-card-body li {
+    margin-bottom: 6px;
+    line-height: 1.55;
+  }
+  .answer-card-body strong {
+    color: #171412;
+  }
+  .benefit-callout-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green-pill);
+    color: #ffffff;
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 6px;
+    margin: 8px 0 14px;
+  }
+
+  /* Grounded Sources Drawer */
+  .source-drawer {
+    border-top: 1px dashed var(--line);
+    background: #fbf9f4;
+    padding: 14px 22px;
+  }
+  .source-drawer-title {
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--green-light);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .source-pills-wrap {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .source-chip {
+    background: #ffffff;
+    border: 1px solid var(--line);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--ink);
+  }
+  .source-chip .jur-tag {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--green);
+    background: var(--green-soft);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  /* Answer Card Footer Actions */
+  .answer-card-actions {
+    border-top: 1px solid var(--line-subtle);
+    padding: 10px 22px;
+    background: #faf7f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12.5px;
+  }
+  .action-buttons-group {
+    display: flex;
+    gap: 8px;
+  }
+  .card-action-btn {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.12s;
+  }
+  .card-action-btn:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  /* Shimmer Skeleton Loader */
+  .loading-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+  }
+  .skeleton-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .skeleton-spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--line);
+    border-top-color: var(--saffron);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .skeleton-status-text {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--saffron-deep);
+  }
+  .skeleton-line {
+    height: 13px;
+    background: linear-gradient(90deg, #f0e9dc 25%, #faf6ee 50%, #f0e9dc 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+  /* ===== DOCUMENTS DIRECTORY ===== */
+  .doc-search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .doc-search-input {
+    flex: 1;
+    min-width: 260px;
+    padding: 10px 14px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 14px;
+    background: var(--bg-raised);
+  }
+  .doc-filter-pills {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .doc-filter-pills button {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .doc-filter-pills button.active {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+
+  .table-container {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  table.doc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    text-align: left;
+  }
+  table.doc-table th {
+    background: #fbf7ee;
+    padding: 11px 16px;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-muted);
+    border-bottom: 1.5px solid var(--line);
+  }
+  table.doc-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line-subtle);
+    vertical-align: middle;
+  }
+  table.doc-table tr:last-child td {
+    border-bottom: none;
+  }
+  table.doc-table tr:hover td {
+    background: #fcf9f2;
+  }
+  .scheme-title-col {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .scheme-sub-filename {
+    font-size: 12px;
+    color: var(--ink-muted);
+    font-family: monospace;
+    margin-top: 2px;
+  }
+  .table-action-btn {
+    background: none;
+    border: 1px solid var(--line);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--saffron);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .table-action-btn:hover {
+    background: var(--saffron);
+    color: #fff;
+    border-color: var(--saffron);
+  }
+
+  /* ===== ELIGIBILITY SCREENER ===== */
+  .screener-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 28px;
+  }
+  .screener-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .screener-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .screener-field.full {
+    grid-column: 1 / -1;
+  }
+  .screener-field label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .screener-field select,
+  .screener-field input,
+  .screener-field textarea {
+    font-family: inherit;
+    font-size: 14.5px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #ffffff;
+    color: var(--ink);
+  }
+  .screener-field textarea {
+    min-height: 70px;
+    resize: vertical;
+  }
+
+  /* Eligibility Result Verdict */
+  .eligibility-verdict-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+  .verdict-header {
+    background: var(--green);
+    color: #fff;
+    padding: 14px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .verdict-title {
+    font-weight: 700;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .verdict-body {
+    padding: 24px;
+    font-size: 15px;
+    line-height: 1.65;
+  }
+  .disclaimer-banner {
+    background: var(--bg-subtle);
+    border-top: 1px dashed var(--line);
+    padding: 12px 22px;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+
+  /* ===== ABOUT SECTION ===== */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 28px;
+  }
+  .about-content {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    font-size: 15px;
+  }
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin-top: 14px;
+  }
+  .spec-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line-subtle);
+  }
+  .spec-table td:first-child {
+    color: var(--ink-soft);
+    width: 45%;
+  }
+  .spec-table td:last-child {
+    font-weight: 600;
+  }
+
+  /* ===== Site Footer ===== */
+  footer.site-footer {
+    border-top: 1px solid var(--line);
+    background: var(--bg-raised);
+    padding: 32px 0 40px;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .footer-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .footer-links {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .footer-disclaimer-box {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 14px 18px;
+    background: var(--bg);
+    line-height: 1.6;
+    font-size: 12.5px;
+  }
+
+  /* Toast Notification */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #1f1b18;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-weight: 500;
+    box-shadow: var(--shadow-md);
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.2s ease;
+    pointer-events: none;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Responsive Breakpoints */
+  @media (max-width: 900px) {
+    .app-layout {
+      grid-template-columns: 1fr;
+    }
+    aside.sidebar {
+      position: static;
+    }
+    .about-grid {
+      grid-template-columns: 1fr;
+    }
+    .screener-grid {
+      grid-template-columns: 1fr;
+    }
+    .header-main {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Top Tricolor Accent Line -->
+<div class="tricolor-edge"></div>
+
+<!-- Top Utility Bar -->
+<div class="utility-bar">
+  <div class="wrap">
+    <div class="utility-left">
+      <span class="utility-badge" id="lblCapstone">Student Capstone Research Project</span>
+      <span style="color:#665e54;">|</span>
+      <span id="lblOfficialDisclaimer">Verified Against Official Government Records</span>
+    </div>
+    <div class="utility-right">
+      <!-- Live Status Pill -->
+      <div class="status-indicator" id="statusPill" title="Live ChromaDB Vector Store">
+        <span class="status-dot"></span>
+        <span id="statusText">63 Schemes Indexed</span>
+      </div>
+      <!-- Language Switcher -->
+      <div class="lang-toggle-wrap">
+        <button class="lang-pill active" id="btnLangEn">English</button>
+        <button class="lang-pill" id="btnLangHi">हिन्दी</button>
+      </div>
+      <!-- Accessibility Font Size -->
+      <div>
+        <button class="util-btn" id="btnZoomOut" title="Decrease font size">A−</button>
+        <button class="util-btn" id="btnZoomIn" title="Increase font size">A+</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Header with Custom Civic Emblem -->
+<header class="site-header">
+  <div class="wrap">
+    <div class="header-main">
+      <div class="brand-group">
+        <!-- SVG Civic Seal (Ashoka Wheel + Book Motif) -->
+        <svg class="civic-seal" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="46" stroke="#1f1b18" stroke-width="2.5" fill="#fdfbf7"/>
+          <circle cx="50" cy="50" r="41" stroke="#b45309" stroke-width="1.2" stroke-dasharray="2 2"/>
+          <!-- Wheel spokes motif -->
+          <circle cx="50" cy="40" r="16" stroke="#1f1b18" stroke-width="2"/>
+          <circle cx="50" cy="40" r="4" fill="#b45309"/>
+          <path d="M50 24V56M34 40H66M38.7 28.7L61.3 51.3M38.7 51.3L61.3 28.7" stroke="#1f1b18" stroke-width="1.2"/>
+          <!-- Open book base motif -->
+          <path d="M26 73C33 68 44 68 50 71C56 68 67 68 74 73V61C67 56 56 56 50 59C44 56 33 56 26 61V73Z" fill="#1b4332" stroke="#1f1b18" stroke-width="1.5"/>
+          <path d="M50 59V71" stroke="#fffdf9" stroke-width="1.5"/>
+        </svg>
+        <div class="brand-text">
+          <h1>
+            <span>JanSahayak</span>
+            <span class="hindi-sub">जनसहायक</span>
+          </h1>
+          <p class="tagline" id="lblTagline">Government Scheme Intelligence · Education, Healthcare &amp; Agriculture</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="main-nav" id="mainNav">
+      <button class="active" data-section="ask">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span id="navAsk">Ask Scheme Assistant</span>
+      </button>
+      <button data-section="documents">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span id="navDocs">Scheme Directory</span>
+        <span class="nav-count-badge" id="navDocBadge">63</span>
+      </button>
+      <button data-section="eligibility">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span id="navElig">Eligibility Screener</span>
+      </button>
+      <button data-section="about">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        <span id="navAbout">About Project</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- Main App Layout -->
+<div class="wrap app-layout">
+
+  <!-- Left Sidebar (Fully Connected & Interactive) -->
+  <aside class="sidebar">
+
+    <!-- Jurisdiction Checkboxes (Now actively wired to JS & queries) -->
+    <div class="side-card">
+      <h3>
+        <span id="lblJurScope">Jurisdiction Scope</span>
+        <span style="font-size:10px; color:var(--saffron); cursor:pointer;" id="btnResetFilters">Reset</span>
+      </h3>
+      <div class="filter-list" id="jurCheckboxGroup">
+        <label class="jur-checkbox-label checked" data-jur="central">
+          <div class="jur-checkbox-inner">
+            <input type="checkbox" class="jur-filter" value="central" checked>
+            <span id="lblCentral">Central Govt</span>
+          </div>
+          <span class="filter-count" id="countCentral">(41)</span>
+        </label>
+        <label class="jur-checkbox-label checked" data-jur="mp">
+          <div class="jur-checkbox-inner">
+            <input type="checkbox" class="jur-filter" value="mp" checked>
+            <span id="lblMP">Madhya Pradesh</span>
+          </div>
+          <span class="filter-count" id="countMP">(12)</span>
+        </label>
+        <label class="jur-checkbox-label checked" data-jur="rajasthan">
+          <div class="jur-checkbox-inner">
+            <input type="checkbox" class="jur-filter" value="rajasthan" checked>
+            <span id="lblRajasthan">Rajasthan</span>
+          </div>
+          <span class="filter-count" id="countRajasthan">(10)</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Quick Scheme Topics -->
+    <div class="side-card">
+      <h3 id="lblTopicHeader">Quick Topics</h3>
+      <div class="topic-pill-list">
+        <button class="topic-pill-btn" data-query="What scholarships are available for higher education and professional degrees?">
+          <span>🎓</span> <span id="lblTopicEdu">Education &amp; Scholarships</span>
+        </button>
+        <button class="topic-pill-btn" data-query="What benefits and eligibility apply under PM-KISAN and farmer schemes?">
+          <span>🌾</span> <span id="lblTopicAgri">Farmer Subsidies &amp; Agriculture</span>
+        </button>
+        <button class="topic-pill-btn" data-query="What are the hospitalization and treatment benefits under Ayushman Bharat PM-JAY?">
+          <span>🏥</span> <span id="lblTopicHealth">Healthcare &amp; PM-JAY</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Live Vector Store Status -->
+    <div class="side-card">
+      <h3 id="lblSystemHealth">System Health</h3>
+      <div class="status-card-inner">
+        <div class="status-row">
+          <span style="color:var(--ink-soft);" id="lblVectorEngine">Vector Index</span>
+          <span class="status-val-pill" id="valEngine">ChromaDB + BM25</span>
+        </div>
+        <div class="status-row">
+          <span style="color:var(--ink-soft);" id="lblModelName">Synthesis Model</span>
+          <span class="status-val-pill">Gemini Flash</span>
+        </div>
+        <div class="status-row">
+          <span style="color:var(--ink-soft);" id="lblApiLatency">API Backend</span>
+          <span class="status-val-pill" id="valBackendStatus">Connected</span>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- Main Dynamic Views -->
+  <main class="main-content">
+
+    <!-- ===== SECTION 1: ASK SCHEME ASSISTANT ===== -->
+    <section id="ask" class="active">
+      <div class="section-intro">
+        <h2 id="lblAskHeader">Ask Scheme Assistant</h2>
+        <p id="lblAskSub">Answers are synthesized strictly from indexed Central, MP, and Rajasthan government documents.</p>
+      </div>
+
+      <!-- Search Input Card -->
+      <div class="ask-box-card">
+        <div class="ask-input-wrap">
+          <textarea id="askInput" class="ask-textarea" rows="2" placeholder="Ask a question in English or हिन्दी (e.g. AICTE Swanath scholarship for orphan students)..."></textarea>
+          <div class="ask-actions">
+            <!-- Voice Input Button (Affordance with SpeechRecognition support) -->
+            <button class="icon-btn" id="btnVoice" title="Dictate question in Hindi or English">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            </button>
+            <!-- Submit Button -->
+            <button class="ask-submit-btn" id="btnAskSend">
+              <span id="btnAskText">Ask</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Prompt Chips -->
+      <div class="quick-prompts-row">
+        <span class="quick-prompts-label" id="lblQuickPrompt">Quick prompts:</span>
+        <button class="prompt-chip" data-q="What are the benefits under AICTE Swanath Scholarship for orphan students?">Scholarship for orphan students</button>
+        <button class="prompt-chip" data-q="What is PM-KISAN Samman Nidhi scheme and who is eligible?">PM-KISAN ₹6000 details</button>
+        <button class="prompt-chip" data-q="What are the eligibility criteria and hospital coverage under Ayushman Bharat PM-JAY?">Ayushman Bharat coverage</button>
+        <button class="prompt-chip" data-q="देवनारायण छात्रा स्कूटी योजना के लिए पात्रता और लाभ क्या हैं?">देवनारायण स्कूटी योजना पात्रता</button>
+      </div>
+
+      <!-- Results Feed -->
+      <div class="response-feed" id="askResults">
+        <!-- Initial Welcome Editorial Card -->
+        <div class="answer-card" id="initialWelcomeCard">
+          <div class="answer-card-header">
+            <span class="user-query-text">Grounded Citizen Assistance</span>
+            <span class="query-meta-pill">Official Corpus</span>
+          </div>
+          <div class="answer-card-body">
+            <h3 style="margin-top:0;">Direct Answers Citing Official Clauses</h3>
+            <p>JanSahayak searches verified scheme circulars published by Central, Madhya Pradesh, and Rajasthan government ministries. It cites the specific document filename for every claim, ensuring zero AI hallucinations.</p>
+            <div class="benefit-callout-badge">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Instant Cross-Verification Across 63 Indexed Schemes</span>
+            </div>
+            <p style="margin-bottom:0; font-size:13.5px; color:var(--ink-soft);">Try picking a quick prompt above or typing your question in English or हिन्दी.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 2: SCHEME DIRECTORY ===== -->
+    <section id="documents">
+      <div class="section-intro">
+        <h2 id="lblDocsHeader">Scheme Directory &amp; Knowledge Base</h2>
+        <p id="lblDocsSub">Explore all verified government scheme circulars currently indexed in the JanSahayak vector store.</p>
+      </div>
+
+      <!-- Search & Filter Controls -->
+      <div class="doc-search-bar">
+        <input type="text" id="docSearchInput" class="doc-search-input" placeholder="Filter 63 documents by name, scheme, or keyword...">
+        <div class="doc-filter-pills" id="docFilterPills">
+          <button class="active" data-jur="all">All Documents</button>
+          <button data-jur="central">Central Govt</button>
+          <button data-jur="mp">Madhya Pradesh</button>
+          <button data-jur="rajasthan">Rajasthan</button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th id="thSchemeName">Scheme Document</th>
+              <th id="thJurisdiction">Jurisdiction</th>
+              <th style="text-align:right;" id="thAction">Action</th>
+            </tr>
+          </thead>
+          <tbody id="docTableBody">
+            <tr>
+              <td colspan="3" style="text-align:center; padding:32px; color:var(--ink-muted);">
+                Connecting to live backend...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 3: ELIGIBILITY SCREENER ===== -->
+    <section id="eligibility">
+      <div class="section-intro">
+        <h2 id="lblEligHeader">Eligibility Screener</h2>
+        <p id="lblEligSub">Input your basic profile details to check matching provisions against official scheme norms.</p>
+      </div>
+
+      <div class="screener-card">
+        <div class="screener-grid">
+          <div class="screener-field">
+            <label for="elState" id="lblStateField">State / Jurisdiction</label>
+            <select id="elState">
+              <option value="Central">Central Government Schemes</option>
+              <option value="Madhya Pradesh">Madhya Pradesh</option>
+              <option value="Rajasthan">Rajasthan</option>
+            </select>
+          </div>
+          <div class="screener-field">
+            <label for="elDomain" id="lblDomainField">Domain / Focus Area</label>
+            <select id="elDomain">
+              <option value="Education">Education &amp; Scholarships</option>
+              <option value="Health">Healthcare &amp; Treatment</option>
+              <option value="Agriculture">Agriculture &amp; Farming</option>
+            </select>
+          </div>
+          <div class="screener-field">
+            <label for="elCategory" id="lblCategoryField">Social Category</label>
+            <input type="text" id="elCategory" placeholder="e.g. General, SC/ST, OBC, Orphan, Girl Child">
+          </div>
+          <div class="screener-field">
+            <label for="elIncome" id="lblIncomeField">Annual Family Income (₹)</label>
+            <input type="text" id="elIncome" placeholder="e.g. 2,50,000">
+          </div>
+          <div class="screener-field">
+            <label for="elLevel" id="lblOccupationField">Current Education or Occupation</label>
+            <input type="text" id="elLevel" placeholder="e.g. 1st year Degree, Small farmer (2 acres)">
+          </div>
+          <div class="screener-field">
+            <label for="elAge" id="lblAgeField">Age (optional)</label>
+            <input type="text" id="elAge" placeholder="e.g. 19">
+          </div>
+          <div class="screener-field full">
+            <label for="elNotes" id="lblNotesField">Additional Context / Special Criteria</label>
+            <textarea id="elNotes" placeholder="e.g. Both parents deceased due to COVID-19, disability certificate holder, or first-generation student..."></textarea>
+          </div>
+        </div>
+
+        <div style="margin-top:20px; display:flex; justify-content:flex-end;">
+          <button class="ask-submit-btn" id="elSubmit">
+            <span id="btnScreenText">Screen Eligibility</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Eligibility Result Wrap -->
+      <div id="elResultWrap"></div>
+    </section>
+
+    <!-- ===== SECTION 4: ABOUT PROJECT ===== -->
+    <section id="about">
+      <div class="section-intro">
+        <h2>About JanSahayak (जनसहायक)</h2>
+        <p>A Senior Capstone AI/ML Research System for Grounded Public Document Intelligence.</p>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-content">
+          <h3 style="margin-top:0; font-size:18px;">Objective &amp; Methodology</h3>
+          <p>JanSahayak addresses information opacity in Indian welfare delivery. Millions of citizens struggle to navigate fragmented portals and 50-page PDF guidelines. JanSahayak indices original government scheme notifications into a hybrid vector store (dense semantic embeddings combined with BM25 lexical keyword matching).</p>
+          <p>Answers are synthesized using Google Gemini, strictly conditioned on retrieved clauses. If an answer cannot be grounded in official text, the system transparently indicates that the information is not present in its corpus.</p>
+          <div class="benefit-callout-badge" style="background:var(--saffron-deep);">
+            <span>Strict Zero-Hallucination Grounding Rule</span>
+          </div>
+          <p style="font-size:13.5px; color:var(--ink-soft); margin-top:12px;">This is a student research capstone and not an official service of the Government of India or State Governments.</p>
+        </div>
+
+        <div class="about-content">
+          <h3 style="margin-top:0; font-size:18px;">Technical Specification</h3>
+          <table class="spec-table">
+            <tr><td>Indexing Engine</td><td>ChromaDB Vector Store</td></tr>
+            <tr><td>Embedding Model</td><td>paraphrase-multilingual-MiniLM-L12</td></tr>
+            <tr><td>Keyword Retrieval</td><td>BM25Okapi Tokenized Corpus</td></tr>
+            <tr><td>Synthesis LLM</td><td>Gemini 3.5 Flash Lite</td></tr>
+            <tr><td>Total Indexed Docs</td><td>63 Gazette Circulars</td></tr>
+            <tr><td>Supported Locales</td><td>English, हिन्दी (Devanagari)</td></tr>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Site Footer -->
+<footer class="site-footer">
+  <div class="wrap footer-wrap">
+    <div class="footer-links">
+      <a href="#" data-goto="ask">Ask Assistant</a>
+      <a href="#" data-goto="documents">Scheme Library</a>
+      <a href="#" data-goto="eligibility">Eligibility Screener</a>
+      <a href="#" data-goto="about">System Specs &amp; Source Policy</a>
+    </div>
+    <div class="footer-disclaimer-box">
+      <strong>Important Academic Disclaimer:</strong> JanSahayak is a final-year student capstone engineering project designed to study grounded RAG architecture on civic documentation. It is not affiliated with or endorsed by the Government of India or any State Government. Citizens must always verify eligibility criteria, required affidavits, and application deadlines on official ministry portals (e.g. <code>scholarships.gov.in</code>, <code>pmkisan.gov.in</code>, <code>nha.gov.in</code>).
+    </div>
+  </div>
+</footer>
+
+<!-- Toast Container -->
+<div class="toast" id="toastMessage">Answer copied to clipboard</div>
+
+<!-- Client-side Interactive Logic -->
+<script>
+  const API_BASE = "http://localhost:8000";
+
+  // State
+  let currentLang = "en";
+  let fontScale = 1.0;
+  let allDocuments = [];
+  let documentsLoaded = false;
+  let activeJurFilters = new Set(["central", "mp", "rajasthan"]);
+  let activeTabJurFilter = "all";
+
+  // Human-readable titles mapping for known schemes
+  const schemeNameMap = {
+    "AICTE_3039_G.pdf": "AICTE – Swanath Scholarship Scheme (Orphan / COVID-19)",
+    "AICTE_3040_G.pdf": "AICTE – Pragati Scholarship for Girl Students",
+    "AICTE_3041_G.pdf": "AICTE – Saksham Scholarship for Differently Abled Students",
+    "PM_KISAN_Operational_Guidelines.pdf": "PM-KISAN Samman Nidhi Operational Guidelines",
+    "Ayushman_Bharat_PMJAY_Guidelines.pdf": "Ayushman Bharat PM-JAY Health Coverage Guidelines",
+    "MP_BOCW_Scholarship_2022.pdf": "MP Building & Other Construction Workers Scholarship",
+    "MP_Medhavi_Chhatra_Yojana.pdf": "MP Mukhyamantri Medhavi Vidhyarthi Yojana (MMVY)",
+    "Rajasthan_Devnarayan_Scooty_Yojana.pdf": "Rajasthan Devnarayan Free Scooty Distribution Scheme",
+    "Rajasthan_Medhavi_Chhatra_Scooty.pdf": "Rajasthan Medhavi Chhatra Scooty Yojana Guidelines"
+  };
+
+  // Bilingual UI Dictionary
+  const i18n = {
+    en: {
+      tagline: "Government Scheme Intelligence · Education, Healthcare & Agriculture",
+      capstone: "Student Capstone Research Project",
+      disclaimer: "Verified Against Official Government Records",
+      navAsk: "Ask Scheme Assistant",
+      navDocs: "Scheme Directory",
+      navElig: "Eligibility Screener",
+      navAbout: "About Project",
+      jurScope: "Jurisdiction Scope",
+      central: "Central Govt",
+      mp: "Madhya Pradesh",
+      rajasthan: "Rajasthan",
+      quickTopics: "Quick Topics",
+      topicEdu: "Education & Scholarships",
+      topicAgri: "Farmer Subsidies & Agriculture",
+      topicHealth: "Healthcare & PM-JAY",
+      askHeader: "Ask Scheme Assistant",
+      askSub: "Answers are synthesized strictly from indexed Central, MP, and Rajasthan government documents.",
+      askPlaceholder: "Ask a question in English or हिन्दी (e.g. AICTE Swanath scholarship for orphan students)...",
+      btnAsk: "Ask",
+      quickPrompt: "Quick prompts:",
+      docsHeader: "Scheme Directory & Knowledge Base",
+      docsSub: "Explore all verified government scheme circulars currently indexed in the JanSahayak vector store.",
+      searchDocsPlaceholder: "Filter 63 documents by name, scheme, or keyword...",
+      eligHeader: "Eligibility Screener",
+      eligSub: "Input your basic profile details to check matching provisions against official scheme norms."
+    },
+    hi: {
+      tagline: "सरकारी योजना सूचना प्रणाली · शिक्षा, स्वास्थ्य एवं कृषि",
+      capstone: "विद्यार्थी कैपस्टोन अनुसंधान परियोजना",
+      disclaimer: "आधिकारिक सरकारी दस्तावेजों द्वारा सत्यापित",
+      navAsk: "योजना सहायक से पूछें",
+      navDocs: "योजना निर्देशिका",
+      navElig: "पात्रता जांच",
+      navAbout: "परियोजना परिचय",
+      jurScope: "सरकारी क्षेत्र (क्षेत्राधिकार)",
+      central: "केंद्र सरकार",
+      mp: "मध्य प्रदेश सरकार",
+      rajasthan: "राजस्थान सरकार",
+      quickTopics: "प्रमुख विषय",
+      topicEdu: "शिक्षा एवं छात्रवृत्ति",
+      topicAgri: "कृषि एवं किसान योजनाएं",
+      topicHealth: "स्वास्थ्य एवं आयुष्मान भारत",
+      askHeader: "योजना संबंधी प्रश्न पूछें",
+      askSub: "उत्तर केवल केंद्रीय, मध्य प्रदेश एवं राजस्थान सरकार के अधिकृत दस्तावेजों से तैयार किए जाते हैं।",
+      askPlaceholder: "अपना प्रश्न हिन्दी या अंग्रेजी में लिखें (उदा. अनाथ विद्यार्थियों के लिए AICTE स्कॉलरशिप)...",
+      btnAsk: "पूछें",
+      quickPrompt: "सुझाए गए प्रश्न:",
+      docsHeader: "योजना निर्देशिका एवं ज्ञानकोश",
+      docsSub: "जनसहायक ज्ञानकोश में अनुक्रमित सभी अधिकृत सरकारी अधिसूचनाएं देखें।",
+      searchDocsPlaceholder: "नाम, योजना या कीवर्ड द्वारा खोजें...",
+      eligHeader: "पात्रता जांच (स्क्रीनर)",
+      eligSub: "अपनी जानकारी भरें और आधिकारिक योजना शर्तों के अनुसार संभावित लाभ जांचें।"
+    }
+  };
+
+  // Markdown Parser Setup
+  if (window.marked) {
+    marked.setOptions({
+      breaks: true,
+      gfm: true
+    });
+  }
+
+  // Toast Function
+  function showToast(msg) {
+    const toast = document.getElementById("toastMessage");
+    toast.textContent = msg;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 2400);
+  }
+
+  // Navigation Handler
+  function showSection(id) {
+    document.querySelectorAll("main.main-content section").forEach(s => s.classList.remove("active"));
+    const target = document.getElementById(id);
+    if (target) target.classList.add("active");
+
+    document.querySelectorAll("#mainNav button").forEach(b => {
+      b.classList.toggle("active", b.dataset.section === id);
+    });
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (id === "documents" && !documentsLoaded) loadDocuments();
+  }
+
+  document.querySelectorAll("#mainNav button").forEach(b => {
+    b.addEventListener("click", () => showSection(b.dataset.section));
+  });
+  document.querySelectorAll("[data-goto]").forEach(el => {
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      showSection(el.dataset.goto);
+    });
+  });
+
+  // Language Switcher
+  function applyLanguage(lang) {
+    currentLang = lang;
+    const t = i18n[lang];
+    document.getElementById("lblTagline").textContent = t.tagline;
+    document.getElementById("lblCapstone").textContent = t.capstone;
+    document.getElementById("lblOfficialDisclaimer").textContent = t.disclaimer;
+    document.getElementById("navAsk").textContent = t.navAsk;
+    document.getElementById("navDocs").textContent = t.navDocs;
+    document.getElementById("navElig").textContent = t.navElig;
+    document.getElementById("navAbout").textContent = t.navAbout;
+    document.getElementById("lblJurScope").textContent = t.jurScope;
+    document.getElementById("lblCentral").textContent = t.central;
+    document.getElementById("lblMP").textContent = t.mp;
+    document.getElementById("lblRajasthan").textContent = t.rajasthan;
+    document.getElementById("lblTopicHeader").textContent = t.quickTopics;
+    document.getElementById("lblTopicEdu").textContent = t.topicEdu;
+    document.getElementById("lblTopicAgri").textContent = t.topicAgri;
+    document.getElementById("lblTopicHealth").textContent = t.topicHealth;
+    document.getElementById("lblAskHeader").textContent = t.askHeader;
+    document.getElementById("lblAskSub").textContent = t.askSub;
+    document.getElementById("askInput").placeholder = t.askPlaceholder;
+    document.getElementById("btnAskText").textContent = t.btnAsk;
+    document.getElementById("lblQuickPrompt").textContent = t.quickPrompt;
+    document.getElementById("lblDocsHeader").textContent = t.docsHeader;
+    document.getElementById("lblDocsSub").textContent = t.docsSub;
+    document.getElementById("docSearchInput").placeholder = t.searchDocsPlaceholder;
+    document.getElementById("lblEligHeader").textContent = t.eligHeader;
+    document.getElementById("lblEligSub").textContent = t.eligSub;
+
+    document.getElementById("btnLangEn").classList.toggle("active", lang === "en");
+    document.getElementById("btnLangHi").classList.toggle("active", lang === "hi");
+  }
+
+  document.getElementById("btnLangEn").addEventListener("click", () => applyLanguage("en"));
+  document.getElementById("btnLangHi").addEventListener("click", () => applyLanguage("hi"));
+
+  // Text Sizing Accessibility Controls
+  document.getElementById("btnZoomIn").addEventListener("click", () => {
+    fontScale = Math.min(fontScale + 0.08, 1.3);
+    document.documentElement.style.setProperty("--font-scale", fontScale);
+  });
+  document.getElementById("btnZoomOut").addEventListener("click", () => {
+    fontScale = Math.max(fontScale - 0.08, 0.9);
+    document.documentElement.style.setProperty("--font-scale", fontScale);
+  });
+
+  // Jurisdiction Sidebar Checkbox Reactivity
+  const checkboxes = document.querySelectorAll(".jur-filter");
+  checkboxes.forEach(cb => {
+    cb.addEventListener("change", (e) => {
+      const parentLabel = cb.closest(".jur-checkbox-label");
+      if (cb.checked) {
+        activeJurFilters.add(cb.value);
+        parentLabel.classList.add("checked");
+      } else {
+        if (activeJurFilters.size <= 1) {
+          // Prevent unchecking all
+          cb.checked = true;
+          showToast("At least one jurisdiction must remain active");
+          return;
+        }
+        activeJurFilters.delete(cb.value);
+        parentLabel.classList.remove("checked");
+      }
+      if (documentsLoaded) renderDocuments();
+    });
+  });
+
+  document.getElementById("btnResetFilters").addEventListener("click", () => {
+    checkboxes.forEach(cb => {
+      cb.checked = true;
+      activeJurFilters.add(cb.value);
+      cb.closest(".jur-checkbox-label").classList.add("checked");
+    });
+    if (documentsLoaded) renderDocuments();
+    showToast("Jurisdiction filters reset to All");
+  });
+
+  // Topic Buttons Quick Query
+  document.querySelectorAll(".topic-pill-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      showSection("ask");
+      const q = btn.dataset.query;
+      document.getElementById("askInput").value = q;
+      askQuestion(q);
+    });
+  });
+
+  // Auto-Expanding Textarea
+  const askInput = document.getElementById("askInput");
+  askInput.addEventListener("input", function() {
+    this.style.height = "auto";
+    this.style.height = Math.min(this.scrollHeight, 200) + "px";
+  });
+
+  // Voice Dictation Affordance
+  const btnVoice = document.getElementById("btnVoice");
+  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = currentLang === 'hi' ? 'hi-IN' : 'en-IN';
+    recognition.continuous = false;
+    
+    recognition.onresult = (e) => {
+      const transcript = e.results[0][0].transcript;
+      askInput.value = transcript;
+      askInput.dispatchEvent(new Event('input'));
+      showToast("Voice captured!");
+    };
+    btnVoice.addEventListener("click", () => {
+      recognition.lang = currentLang === 'hi' ? 'hi-IN' : 'en-IN';
+      recognition.start();
+      showToast("Listening... speak your question");
+    });
+  } else {
+    btnVoice.addEventListener("click", () => {
+      showToast("Voice typing requires Chrome or Edge browser");
+    });
+  }
+
+  // Ask Logic
+  const askResults = document.getElementById("askResults");
+  const btnAskSend = document.getElementById("btnAskSend");
+
+  function cleanAnswerText(rawAnswer) {
+    // Strip redundant "Source(s):" suffix if the model generated one
+    return rawAnswer.replace(/\n+Source\(s\):[\s\S]*$/i, '').trim();
+  }
+
+  async function askQuestion(question) {
+    if (!question || !question.trim()) return;
+    const trimmed = question.trim();
+
+    // Disable input while generating
+    btnAskSend.disabled = true;
+    askInput.disabled = true;
+
+    // Create Skeleton Loader Block
+    const loadingCard = document.createElement("div");
+    loadingCard.className = "loading-card";
+    loadingCard.innerHTML = `
+      <div class="skeleton-header">
+        <div class="skeleton-spinner"></div>
+        <span class="skeleton-status-text">Searching indexed clauses across Central, MP & Rajasthan…</span>
+      </div>
+      <div class="skeleton-line" style="width: 85%;"></div>
+      <div class="skeleton-line" style="width: 95%;"></div>
+      <div class="skeleton-line" style="width: 65%;"></div>
+    `;
+    askResults.prepend(loadingCard);
+
+    try {
+      const res = await fetch(API_BASE + "/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: trimmed })
+      });
+
+      if (!res.ok) throw new Error("HTTP error " + res.status);
+      const data = await res.json();
+      loadingCard.remove();
+
+      // Filter sources to matching active jurisdiction if needed
+      const sources = data.sources || [];
+      const cleanAnswer = cleanAnswerText(data.answer);
+
+      // Render Markdown
+      let parsedHtml = window.marked ? marked.parse(cleanAnswer) : cleanAnswer;
+
+      // Extract any rupee grant amount to auto-highlight
+      const rupeeMatch = cleanAnswer.match(/₹[\d,]+(?:\s*(?:per annum|per year|\/year|प्रति वर्ष|करोड़|हज़ार))?/i);
+      let calloutHtml = "";
+      if (rupeeMatch) {
+        calloutHtml = `
+          <div class="benefit-callout-badge">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <span>Verified Grant: ${rupeeMatch[0]}</span>
+          </div>
+        `;
+      }
+
+      // Build Sources Badges
+      let sourceChips = sources.map(s => {
+        const readable = schemeNameMap[s.filename] || s.filename;
+        return `
+          <div class="source-chip" title="${s.filename}">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1b4332" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span>${readable}</span>
+            <span class="jur-tag">${s.jurisdiction}</span>
+          </div>
+        `;
+      }).join("");
+
+      const answerCard = document.createElement("div");
+      answerCard.className = "answer-card";
+      answerCard.innerHTML = `
+        <div class="answer-card-header">
+          <span class="user-query-text">“${escapeHtml(trimmed)}”</span>
+          <span class="query-meta-pill">Grounded Response</span>
+        </div>
+        <div class="answer-card-body">
+          ${calloutHtml}
+          ${parsedHtml}
+        </div>
+        ${sources.length > 0 ? `
+          <div class="source-drawer">
+            <div class="source-drawer-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Verified Official Sources Citing This Answer:</span>
+            </div>
+            <div class="source-pills-wrap">
+              ${sourceChips}
+            </div>
+          </div>
+        ` : ''}
+        <div class="answer-card-actions">
+          <span style="color:var(--ink-muted); font-size:11.5px;">Grounded against JanSahayak Vector Store</span>
+          <div class="action-buttons-group">
+            <button class="card-action-btn btn-copy-card">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span>Copy</span>
+            </button>
+            <button class="card-action-btn btn-print-card">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              <span>Print Brief</span>
+            </button>
+          </div>
+        </div>
+      `;
+
+      // Copy Action
+      answerCard.querySelector(".btn-copy-card").addEventListener("click", () => {
+        navigator.clipboard.writeText(`Question: ${trimmed}\n\nAnswer:\n${cleanAnswer}\n\nSources:\n` + sources.map(s => s.filename).join(", "));
+        showToast("Answer & Sources copied to clipboard");
+      });
+
+      // Print Action
+      answerCard.querySelector(".btn-print-card").addEventListener("click", () => {
+        window.print();
+      });
+
+      askResults.prepend(answerCard);
+
+    } catch (err) {
+      loadingCard.remove();
+      const errCard = document.createElement("div");
+      errCard.className = "answer-card";
+      errCard.innerHTML = `
+        <div class="answer-card-header" style="background:var(--red-soft);">
+          <span class="user-query-text" style="color:var(--red);">Connection Notice</span>
+        </div>
+        <div class="answer-card-body">
+          <p style="color:var(--red); font-weight:600;">Unable to connect to the JanSahayak backend API.</p>
+          <p style="font-size:13.5px; color:var(--ink-soft); margin-bottom:0;">Please ensure the FastAPI service is active via <code>uvicorn backend.main:app --port 8000</code>.</p>
+        </div>
+      `;
+      askResults.prepend(errCard);
+    } finally {
+      btnAskSend.disabled = false;
+      askInput.disabled = false;
+      askInput.value = "";
+      askInput.style.height = "52px";
+    }
+  }
+
+  btnAskSend.addEventListener("click", () => askQuestion(askInput.value));
+  askInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      askQuestion(askInput.value);
+    }
+  });
+
+  document.querySelectorAll(".prompt-chip").forEach(chip => {
+    chip.addEventListener("click", () => {
+      showSection("ask");
+      askInput.value = chip.dataset.q;
+      askQuestion(chip.dataset.q);
+    });
+  });
+
+  // ===== Documents Library Logic =====
+  async function loadDocuments() {
+    const tbody = document.getElementById("docTableBody");
+    try {
+      const res = await fetch(API_BASE + "/documents");
+      if (!res.ok) throw new Error("HTTP error " + res.status);
+      const data = await res.json();
+      allDocuments = data.documents || [];
+      documentsLoaded = true;
+
+      // Update counter badges
+      document.getElementById("statusText").textContent = `${allDocuments.length} Schemes Indexed`;
+      document.getElementById("navDocBadge").textContent = allDocuments.length;
+
+      // Update jurisdiction count badges
+      const counts = { central: 0, mp: 0, rajasthan: 0 };
+      allDocuments.forEach(d => {
+        const j = (d.jurisdiction || "").toLowerCase();
+        if (counts[j] !== undefined) counts[j]++;
+      });
+      document.getElementById("countCentral").textContent = `(${counts.central})`;
+      document.getElementById("countMP").textContent = `(${counts.mp})`;
+      document.getElementById("countRajasthan").textContent = `(${counts.rajasthan})`;
+
+      renderDocuments();
+    } catch (err) {
+      // Fallback demo mock if backend isn't up yet
+      allDocuments = [
+        { filename: "AICTE_3039_G.pdf", jurisdiction: "central" },
+        { filename: "AICTE_3040_G.pdf", jurisdiction: "central" },
+        { filename: "PM_KISAN_Operational_Guidelines.pdf", jurisdiction: "central" },
+        { filename: "Ayushman_Bharat_PMJAY_Guidelines.pdf", jurisdiction: "central" },
+        { filename: "MP_BOCW_Scholarship_2022.pdf", jurisdiction: "mp" },
+        { filename: "MP_Medhavi_Chhatra_Yojana.pdf", jurisdiction: "mp" },
+        { filename: "Rajasthan_Devnarayan_Scooty_Yojana.pdf", jurisdiction: "rajasthan" },
+        { filename: "Rajasthan_Medhavi_Chhatra_Scooty.pdf", jurisdiction: "rajasthan" }
+      ];
+      document.getElementById("valBackendStatus").textContent = "Offline (Demo Mode)";
+      document.getElementById("valBackendStatus").style.background = "var(--red-soft)";
+      document.getElementById("valBackendStatus").style.color = "var(--red)";
+      renderDocuments();
+    }
+  }
+
+  function renderDocuments() {
+    const tbody = document.getElementById("docTableBody");
+    const query = (document.getElementById("docSearchInput").value || "").toLowerCase().trim();
+
+    let filtered = allDocuments.filter(doc => {
+      const jur = (doc.jurisdiction || "").toLowerCase();
+      // Sidebar filter condition
+      if (!activeJurFilters.has(jur)) return false;
+      // Tab pill condition
+      if (activeTabJurFilter !== "all" && jur !== activeTabJurFilter) return false;
+      // Search keyword condition
+      if (query) {
+        const title = (schemeNameMap[doc.filename] || "").toLowerCase();
+        const file = doc.filename.toLowerCase();
+        return title.includes(query) || file.includes(query) || jur.includes(query);
+      }
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="3" style="text-align:center; padding:32px; color:var(--ink-muted);">
+            No scheme documents match the active filters or search terms.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(d => {
+      const friendlyName = schemeNameMap[d.filename] || d.filename.replace(/\.pdf$/i, '').replace(/_/g, ' ');
+      const jurLabel = d.jurisdiction === "mp" ? "Madhya Pradesh" : d.jurisdiction === "rajasthan" ? "Rajasthan" : "Central Govt";
+      return `
+        <tr>
+          <td>
+            <div class="scheme-title-col">${escapeHtml(friendlyName)}</div>
+            <div class="scheme-sub-filename">${escapeHtml(d.filename)}</div>
+          </td>
+          <td>
+            <span class="source-chip" style="border:none; padding:0;">
+              <span class="jur-tag">${jurLabel}</span>
+            </span>
+          </td>
+          <td style="text-align:right;">
+            <button class="table-action-btn" data-docquery="Tell me the complete eligibility criteria, benefits and application process for ${escapeHtml(friendlyName)}">
+              <span>Ask About Scheme</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join("");
+
+    // Wire "Ask About Scheme" buttons
+    tbody.querySelectorAll("[data-docquery]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        showSection("ask");
+        const q = btn.dataset.docquery;
+        askInput.value = q;
+        askQuestion(q);
+      });
+    });
+  }
+
+  // Document Search Input Listener
+  document.getElementById("docSearchInput").addEventListener("input", renderDocuments);
+
+  // Document Jurisdiction Filter Pills
+  document.querySelectorAll("#docFilterPills button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#docFilterPills button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      activeTabJurFilter = btn.dataset.jur;
+      renderDocuments();
+    });
+  });
+
+  // ===== Eligibility Screener Logic =====
+  document.getElementById("elSubmit").addEventListener("click", async () => {
+    const state = document.getElementById("elState").value;
+    const domain = document.getElementById("elDomain").value;
+    const category = document.getElementById("elCategory").value || "General / All";
+    const income = document.getElementById("elIncome").value || "Not specified";
+    const level = document.getElementById("elLevel").value || "Not specified";
+    const age = document.getElementById("elAge").value || "Not specified";
+    const notes = document.getElementById("elNotes").value || "None";
+
+    const promptQuestion = `Please evaluate scheme eligibility based on official guidelines for the following citizen profile:
+- State / Jurisdiction: ${state}
+- Domain / Area: ${domain}
+- Social / Special Category: ${category}
+- Annual Family Income: ₹${income}
+- Current Education / Occupation: ${level}
+- Age: ${age}
+- Additional Details: ${notes}
+
+Based on JanSahayak's indexed scheme documents:
+1. Which specific government schemes is this person likely eligible for?
+2. What are the key monetary benefits or allowances under each matching scheme?
+3. What mandatory documentation or income ceilings must be verified?`;
+
+    const resultWrap = document.getElementById("elResultWrap");
+    resultWrap.innerHTML = `
+      <div class="eligibility-verdict-card" style="margin-top:24px;">
+        <div class="verdict-header" style="background:var(--saffron);">
+          <div class="verdict-title">
+            <div class="skeleton-spinner" style="border-top-color:#fff;"></div>
+            <span>Evaluating Profile Against Scheme Rules…</span>
+          </div>
+        </div>
+        <div class="verdict-body">
+          <div class="skeleton-line" style="width: 80%;"></div>
+          <div class="skeleton-line" style="width: 90%;"></div>
+          <div class="skeleton-line" style="width: 70%;"></div>
+        </div>
+      </div>
+    `;
+
+    try {
+      const res = await fetch(API_BASE + "/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: promptQuestion })
+      });
+      if (!res.ok) throw new Error("HTTP error " + res.status);
+      const data = await res.json();
+
+      const cleanAns = cleanAnswerText(data.answer);
+      const parsedAns = window.marked ? marked.parse(cleanAns) : cleanAns;
+
+      let sourcesHtml = "";
+      if (data.sources && data.sources.length) {
+        sourcesHtml = data.sources.map(s => `
+          <div class="source-chip">
+            <span>${schemeNameMap[s.filename] || s.filename}</span>
+            <span class="jur-tag">${s.jurisdiction}</span>
+          </div>
+        `).join("");
+      }
+
+      resultWrap.innerHTML = `
+        <div class="eligibility-verdict-card" style="margin-top:24px;">
+          <div class="verdict-header">
+            <div class="verdict-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Automated Scheme Assessment Report</span>
+            </div>
+            <span style="font-size:12px; font-weight:600; opacity:0.9;">Grounded in Official Guidelines</span>
+          </div>
+          <div class="verdict-body">
+            ${parsedAns}
+          </div>
+          ${sourcesHtml ? `
+            <div class="source-drawer">
+              <div class="source-drawer-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Matching Scheme Guidelines Consulted:</span>
+              </div>
+              <div class="source-pills-wrap">
+                ${sourcesHtml}
+              </div>
+            </div>
+          ` : ''}
+          <div class="disclaimer-banner">
+            Notice: This assessment is an automated semantic retrieval against public guidelines. Final approval, certificates, and disbursements are strictly determined by the respective government department.
+          </div>
+        </div>
+      `;
+    } catch (err) {
+      resultWrap.innerHTML = `
+        <div class="eligibility-verdict-card" style="margin-top:24px;">
+          <div class="verdict-header" style="background:var(--red);">
+            <div class="verdict-title">Backend Connection Error</div>
+          </div>
+          <div class="verdict-body" style="color:var(--red);">
+            Could not reach the JanSahayak backend to perform eligibility screening. Please start the FastAPI server at port 8000.
+          </div>
+        </div>
+      `;
+    }
+  });
+
+  // Check Backend Health on Initial Load
+  async function checkBackendHealth() {
+    try {
+      const res = await fetch(API_BASE + "/");
+      if (res.ok) {
+        document.getElementById("valBackendStatus").textContent = "Connected (Healthy)";
+        loadDocuments();
+      }
+    } catch (e) {
+      document.getElementById("valBackendStatus").textContent = "Offline (Demo Mode)";
+      document.getElementById("valBackendStatus").style.background = "var(--red-soft)";
+      document.getElementById("valBackendStatus").style.color = "var(--red)";
+      loadDocuments(); // Loads mock list
+    }
+  }
+
+  // Security helper
+  function escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // Init
+  checkBackendHealth();
+</script>
+
+</body>
+</html>

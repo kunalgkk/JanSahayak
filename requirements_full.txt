@@ -1,0 +1,11 @@
+pdfplumber
+pytesseract
+pdf2image
+sentence-transformers
+chromadb
+rank_bm25
+numpy
+spacy
+google-generativeai
+python-dotenv
+scikit-learn
