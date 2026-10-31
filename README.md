@@ -25,8 +25,6 @@ Ask a question in English or Hindi and get an answer drawn only from real Centra
 13. [Deployment](#deployment)
 14. [Known issues and limitations](#known-issues-and-limitations)
 15. [Roadmap](#roadmap)
-16. [Team](#team)
-17. [References](#references)
 
 ---
 
