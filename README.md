@@ -359,31 +359,7 @@ The classifier numbers are rough: the dataset is 63 documents and the "circular"
 - Authenticated admin upload that runs the ingestion pipeline
 - Migrate to the current Google Gemini SDK
 
-## Team
 
 B.Tech CSE (AI & ML), School of Computing Science and Engineering, VIT Bhopal University.
 
-| Member | Contribution |
-|---|---|
-| Lavish Dixit | Project lead; architecture; ingestion and OCR; embeddings and vector DB; hybrid retrieval; RAG and prompt; FastAPI backend; deployment |
-| Lakshya Paneri | Data collection and curation; data quality checks |
-| Kunal | Named Entity Recognition; Hindi-dominant document handling |
-| Yashi Jain | Document classification |
-| Saloni Pokharna | Summarization; frontend design and implementation |
-| Ujjawal Kumar Sharma | Testing and validation; documentation and report |
 
-**Project guide:** Dr. G. Prabu Kanna, Assistant Professor.
-
-## References
-
-1. Reimers, N. and Gurevych, I., "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks," EMNLP-IJCNLP, 2019.
-2. Robertson, S. and Zaragoza, H., "The Probabilistic Relevance Framework: BM25 and Beyond," Foundations and Trends in Information Retrieval, 2009.
-3. Lewis, P. et al., "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks," NeurIPS, 2020.
-4. FastAPI documentation: https://fastapi.tiangolo.com/
-5. ChromaDB documentation: https://docs.trychroma.com/
-
-Source documents are public guidelines from the AICTE, UGC, Ministry of Education, Ministry of Agriculture & Farmers' Welfare, National Health Authority, and the Madhya Pradesh and Rajasthan state departments.
-
-## License
-
-Add a license of your choice (for example MIT) before making the repository public. The government documents remain the property of their respective publishers.
